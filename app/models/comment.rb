@@ -1,6 +1,6 @@
 class Comment
   include Mongoid::Document
-  field :likes, type: Number
+  field :likes, type: Integer
   field :text, type: String
   field :causes, type: Array
 
