@@ -1,6 +1,6 @@
 
 require File.expand_path('../../../config/environment',__FILE__)
-#Written for version 2.5 for official Facebook Graph API
+#Written for version 2.5 for official 	Facebook Graph API
 
 #Current code only fetches last 100 posts as that's the limit for one time fetch. 
 

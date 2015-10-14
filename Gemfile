@@ -25,6 +25,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 #additional gem
 gem 'rename'
 gem 'mongoid'
+gem 'devise'
 
 
 # Use ActiveModel has_secure_password
