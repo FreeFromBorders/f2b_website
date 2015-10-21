@@ -34,10 +34,14 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
 
-  
+  field :first_name, type: String
+  field :last_name, type: String
   field :links, type: Array
   field :causes, type: Array
 
   has_many :posts
   has_many :comments
+
+  index({email:1},{unique: true})
+
 end
