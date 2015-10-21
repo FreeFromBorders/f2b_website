@@ -13,7 +13,7 @@ class FacebookGraph
 		@version = "v2.5"
 		@access_token=access_token
 		@id=id
-		@fields="posts.limit(3){message,created_time,comments{like_count,created_time,message},full_picture,shares}"
+		@fields="posts.limit(40){message,created_time,comments{like_count,created_time,message},full_picture,shares}"
 		@url=@facebook_graph_url+@version+"/"+id+"?access_token="+@access_token+"&fields="+@fields
 		@json=URI.parse(URI.encode(@url)).read
 		@hash=JSON.parse(@json)
@@ -27,10 +27,6 @@ class FacebookGraph
 		return @hash["name"]
 	end
 
-	def getPosts()
-		return @hash["posts"]["data"]
-	end
-
 	def getNumberOfLikesforPost(post_id)
 		likes_url=@facebook_graph_url+@version+"/"+post_id+"/likes?access_token="+@access_token+"&summary=true"
 		json=URI.parse(URI.encode(likes_url)).read
@@ -38,17 +34,18 @@ class FacebookGraph
 		return hash['summary']['total_count']
 	end
 
-	def savePostsToUser(user)
-		self.getPosts().each do |post|
-			ffb_post=Post.new(
-				:images=>[post['full_picture']],
-				:text=>post['message'],
-				:time=>post['created_time'],
-				:likes=>self.getNumberOfLikesforPost(post['id']),
-				:shares=>post['shares']['count'],
-				:source=>"https://www.facebook.com/"+post['id']
-				)
-			ffb_post.save
-		end		
+	def getPosts()
+		posts=[]
+		@hash["posts"]["data"].each do |fb_post|
+			post=Hash.new
+			post['images']=fb_post['full_picture']
+			post['text']=fb_post['message']
+			post['time']=fb_post['created_time']
+			post['likes']=self.getNumberOfLikesforPost(fb_post['id'])
+			post['shares']=fb_post['shares']['count']
+			post['source']="https://www.facebook.com/"+fb_post['id']
+			posts.push(post)
+		end
+		return posts
 	end
 end
