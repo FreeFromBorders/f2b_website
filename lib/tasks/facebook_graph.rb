@@ -1,5 +1,3 @@
-
-require File.expand_path('../../../config/environment',__FILE__)
 #Written for version 2.5 for official 	Facebook Graph API
 
 #Current code only fetches last 100 posts as that's the limit for one time fetch. 
@@ -19,31 +17,39 @@ class FacebookGraph
 		@hash=JSON.parse(@json)
 	end
 
-	def getID()
+	def get_id()
 		return @hash["id"]
 	end
 
-	def getName()
+	def get_name()
 		return @hash["name"]
 	end
 
-	def getNumberOfLikesforPost(post_id)
+	def get_likes_count_for_post(post_id)
 		likes_url=@facebook_graph_url+@version+"/"+post_id+"/likes?access_token="+@access_token+"&summary=true"
 		json=URI.parse(URI.encode(likes_url)).read
 		hash=JSON.parse(json)
 		return hash['summary']['total_count']
 	end
 
-	def getPosts()
+	def get_posts_with_comments()
 		posts=[]
 		@hash["posts"]["data"].each do |fb_post|
 			post=Hash.new
 			post['images']=fb_post['full_picture']
-			post['text']=fb_post['message']
+			post['message']=fb_post['message']
 			post['time']=fb_post['created_time']
-			post['likes']=self.getNumberOfLikesforPost(fb_post['id'])
+			post['likes_count']=self.get_likes_count_for_post(fb_post['id'])
 			post['shares']=fb_post['shares']['count']
 			post['source']="https://www.facebook.com/"+fb_post['id']
+			post['comments']=[]
+			fb_post['comments']['data'].each do |fb_comment|
+				comment=Hash.new
+				comment['likes_count']=fb_comment['likes_count']
+				comment['time']=fb_comment['created_time']
+				comment['message']=fb_comment['message']
+				post['comments'].push(comment)
+			end
 			posts.push(post)
 		end
 		return posts
