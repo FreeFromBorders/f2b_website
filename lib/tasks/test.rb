@@ -1,4 +1,18 @@
 require File.expand_path('../../../config/environment',__FILE__)
 require_relative 'facebook_graph'
-fb=FacebookGraph.new("humansofnewyork","CAACEdEose0cBALkoYibvWZAwzCMMit5WVAlXSR7xsQ7x1vVtinHmijibnXAjTMLsJdh9MWUVBhBo32sSbv8ZA0dZCOesj9CvKCtTiuPHqUf5yG3zBVkcWjoFr5IJ0iJf7iopoVhPXAOlmbXcPETTkK7Jhs38XSvIfBTMPZBYPljo7o9PC9wN6R88pMEwsZABEp8zk89a65KjhgpcmZBBQ2heCPF855zDQZD")
-p Post.new(:message=>fb.get_posts_with_comments[0]['message'])
+fb=FacebookGraph.new("humansofnewyork","CAACEdEose0cBAPZAPO47RLcuAhXP2hA7uh42vUlDc4iRnfE391sxDID6UiofouYZCJyZC1s0uUPq8AmELT2ZAud7TkZCqHZAivvGZBJg5ZAHZBEwjh2p35lOMrQOZCtdxozTQ5YN1qRZAYb4O2Y0UkIUu0A9K3s4ur7MQAflDcvMhkWxrnqyrzAOcEp8Yejp2HDVm6GFmizWUi6errgOZB11wQLLCwYzG1XlkLUZD")
+post = Post.new(
+	:images=>fb.get_posts_with_comments()[0]['images'],
+	:message=>fb.get_posts_with_comments()[0]['message'],
+	:time=>fb.get_posts_with_comments()[0]['time'],
+	:like_count=>fb.get_posts_with_comments()[0]['like_count'],
+	:share_count=>fb.get_posts_with_comments()[0]['share_count'],
+	:source=>fb.get_posts_with_comments()[0]['source']
+)
+post.save
+comment= post.comments.new(
+	:like_count=>fb.get_posts_with_comments()[0]['comments'][0]['like_count'],
+	:message=>fb.get_posts_with_comments()[0]['comments'][0]['message'],
+	:time=>fb.get_posts_with_comments()[0]['comments'][0]['time']
+	)
+comment.save

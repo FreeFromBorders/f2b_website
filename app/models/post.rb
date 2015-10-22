@@ -5,8 +5,8 @@ class Post
   field :location, type: String
   field :time, type: Time
   field :causes, type: Array
-  field :likes_count, type: Integer
-  field :shares, type: Integer
+  field :like_count, type: Integer
+  field :share_count, type: Integer
   field :source, type: String
 
   belongs_to :user

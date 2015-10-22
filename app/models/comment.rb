@@ -1,6 +1,6 @@
 class Comment
   include Mongoid::Document
-  field :likes_count, type: Integer
+  field :like_count, type: Integer
   field :message, type: String
   field :causes, type: Array
   field :time, type: Time

@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :users 
 
   root 'posts#index'
+  get 'posts/save_posts_from_facebook_page' => 'posts#save_posts_from_facebook_page'
   resources :posts
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

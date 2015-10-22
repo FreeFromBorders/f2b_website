@@ -11,7 +11,7 @@ class FacebookGraph
 		@version = "v2.5"
 		@access_token=access_token
 		@id=id
-		@fields="posts.limit(40){message,created_time,comments{like_count,created_time,message},full_picture,shares}"
+		@fields="posts.limit(3){message,created_time,comments{like_count,created_time,message},full_picture,shares}"
 		@url=@facebook_graph_url+@version+"/"+id+"?access_token="+@access_token+"&fields="+@fields
 		@json=URI.parse(URI.encode(@url)).read
 		@hash=JSON.parse(@json)
@@ -36,16 +36,16 @@ class FacebookGraph
 		posts=[]
 		@hash["posts"]["data"].each do |fb_post|
 			post=Hash.new
-			post['images']=fb_post['full_picture']
+			post['images']=[fb_post['full_picture']]
 			post['message']=fb_post['message']
 			post['time']=fb_post['created_time']
-			post['likes_count']=self.get_likes_count_for_post(fb_post['id'])
-			post['shares']=fb_post['shares']['count']
+			post['like_count']=self.get_likes_count_for_post(fb_post['id'])
+			post['share_count']=fb_post['shares']['count']
 			post['source']="https://www.facebook.com/"+fb_post['id']
 			post['comments']=[]
 			fb_post['comments']['data'].each do |fb_comment|
 				comment=Hash.new
-				comment['likes_count']=fb_comment['likes_count']
+				comment['like_count']=fb_comment['like_count']
 				comment['time']=fb_comment['created_time']
 				comment['message']=fb_comment['message']
 				post['comments'].push(comment)
