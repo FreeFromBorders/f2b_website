@@ -1,6 +1,6 @@
 require File.expand_path('../../../config/environment',__FILE__)
 require_relative 'facebook_graph'
-fb=FacebookGraph.new("humansofnewyork","CAACEdEose0cBAPZAPO47RLcuAhXP2hA7uh42vUlDc4iRnfE391sxDID6UiofouYZCJyZC1s0uUPq8AmELT2ZAud7TkZCqHZAivvGZBJg5ZAHZBEwjh2p35lOMrQOZCtdxozTQ5YN1qRZAYb4O2Y0UkIUu0A9K3s4ur7MQAflDcvMhkWxrnqyrzAOcEp8Yejp2HDVm6GFmizWUi6errgOZB11wQLLCwYzG1XlkLUZD")
+fb=FacebookGraph.new("humansofnewyork",Rails.application.secrets.fb_access_token)
 post = Post.new(
 	:images=>fb.get_posts_with_comments()[0]['images'],
 	:message=>fb.get_posts_with_comments()[0]['message'],
