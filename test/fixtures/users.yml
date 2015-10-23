@@ -1,8 +1,8 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  email: MyString
-  password: MyString
+  email: humansofnewyork@facebook.com
+  encrypted_password: <%= Devise.bcrypt(User,'password') %>
   links: 
   causes: 
 

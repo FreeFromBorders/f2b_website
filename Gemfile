@@ -26,6 +26,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'rename'
 gem 'mongoid'
 gem 'devise'
+gem 'factory_girl_rails'
+gem 'rspec'
 
 
 # Use ActiveModel has_secure_password
