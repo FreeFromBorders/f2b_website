@@ -1,12 +1,5 @@
-require "#{Rails.root}/lib/tasks/facebook_graph.rb"
 class PostsController < ApplicationController
 	def index
-		if user_signed_in?
-			puts "USER IS SIGNED IN"
-			head :success
-		else
-			head :forbidden
-		end
 	end
 
 	def save_posts_from_facebook_page
@@ -15,7 +8,7 @@ class PostsController < ApplicationController
 			access_token=params[:access_token]
 			fb_graph=FacebookGraph.new(id,access_token)
 			fb_graph.get_posts_with_comments().each do |fb_post|
-				post=current_user.posts.new(
+				post=current_user.posts.create(
 					:images=>fb_post['images'],
 					:message=>fb_post['message'],
 					:time=>fb_post['time'],
@@ -25,10 +18,11 @@ class PostsController < ApplicationController
 					)
 				post.save
 				fb_post['comments'].each do |fb_comment|
-					comment=post.comments.new(
+					comment=post.comments.create(
 						:like_count=>fb_comment['like_count'],
 						:time=>fb_comment['time'],
-						:message=>fb_comment['message']
+						:message=>fb_comment['message'],
+						:user_id=>post.user_id
 						)
 					comment.save
 				end

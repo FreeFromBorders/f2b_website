@@ -1,5 +1,6 @@
 class Post
   include Mongoid::Document
+  include Mongoid::Timestamps
   field :images, type: Array
   field :message, type: String
   field :location, type: String
@@ -10,7 +11,7 @@ class Post
   field :source, type: String
 
   belongs_to :user
-  has_many :comments
+  has_many :comments, dependent: :destroy
 
   index({message:1},{unique:true})
 end
