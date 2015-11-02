@@ -13,6 +13,7 @@ class FacebookGraph
     @id = id
     @fields = "posts.limit(3){message,created_time,comments{like_count,created_time,message},full_picture,shares}"
     @url = "#{@facebook_graph_url + @version}/#{@id}?access_token=#{@access_token}&fields=#{@fields}"
+    puts @url
     @json = URI.parse(URI.encode(@url)).read
     @hash = JSON.parse(@json)
   end
