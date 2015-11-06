@@ -11,9 +11,9 @@ class FacebookGraph
     @version = "v2.5"
     @access_token = access_token
     @id = id
-    @fields = "posts.limit(3){message,created_time,comments{like_count,created_time,message},full_picture,shares}"
+    @fields = "posts.limit(100){message,created_time,comments{like_count,created_time,message},full_picture,shares}"
     @url = "#{@facebook_graph_url + @version}/#{@id}?access_token=#{@access_token}&fields=#{@fields}"
-    puts @url
+    puts   @url
     @json = URI.parse(URI.encode(@url)).read
     @hash = JSON.parse(@json)
   end
@@ -58,23 +58,27 @@ class FacebookGraph
 
   def save_posts_with_comments_from_facebook_page(user)
     get_posts_with_comments().each do |fb_post|
-      post = user.posts.create(
-        images: fb_post['images'],
-        message: fb_post['message'],
-        time: ['time'],
-        like_count: fb_post['like_count'],
-        share_count: fb_post['shares_count'],
-        source: fb_post['source'],
+      begin
+        post = user.posts.create(
+          images: fb_post['images'],
+          message: fb_post['message'],
+          time: ['time'],
+          like_count: fb_post['like_count'],
+          share_count: fb_post['share_count'],
+          source: fb_post['source'],
         )
-      post.save
-      fb_post['comments'].each do |fb_comment|
-        comment = post.comments.create(
-          like_count: fb_comment['like_count'],
-          time: fb_comment['time'],
-          message: fb_comment['message'],
-          user_id: post.user_id
+        post.save
+        fb_post['comments'].each do |fb_comment|
+          comment = post.comments.create(
+            like_count: fb_comment['like_count'],
+            time: fb_comment['time'],
+            message: fb_comment['message'],
+            user_id: post.user_id
           )
-        comment.save
+          comment.save
+        end
+      rescue Moped::Errors::OperationFailure => e
+        puts e.message
       end
     end
   end

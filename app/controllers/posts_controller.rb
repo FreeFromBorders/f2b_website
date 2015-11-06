@@ -1,5 +1,10 @@
 class PostsController < ApplicationController
   def index
+    if user_signed_in?
+      @posts=current_user.posts
+    else
+      @posts=Post.all
+    end
   end
 
   def save_posts_with_comments_from_facebook_page

@@ -46,7 +46,7 @@ class User
   index({email:1},{unique: true})
 
   def self.find_by_email(email)
-    return where(email:email).first
+    where(email:email).first
   end
 
 end
