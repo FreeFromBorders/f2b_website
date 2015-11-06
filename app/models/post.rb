@@ -13,8 +13,6 @@ class Post
   belongs_to :user
   has_many :comments, dependent: :destroy
 
-  index({message:1},{unique:true})
-
   def self.find_by_message(message)
     where(message:message).first
   end

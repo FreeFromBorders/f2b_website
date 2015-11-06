@@ -78,7 +78,8 @@ class FacebookGraph
           comment.save
         end
       rescue Moped::Errors::OperationFailure => e
-        puts e.message
+        puts "Error: "+ e.message+ "\n"
+        puts "Post: "+ fb_post['message']
       end
     end
   end
