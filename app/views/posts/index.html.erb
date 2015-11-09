@@ -12,10 +12,8 @@
     <%= submit_tag("Save & Display") %>
   <% end %>
   <br>
-  <%= @posts.each do |post| %>
-    <%= post.message %>
-    <br>
-  <% end %>
+  <%= @posts.count %>
+  <br>
 
   <%= link_to 'Sign Out', destroy_user_session_path, :method=>:delete %>
 <%- else %>
