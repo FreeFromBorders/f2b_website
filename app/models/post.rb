@@ -14,6 +14,9 @@ class Post
   has_many :comments, dependent: :destroy
 
   def self.find_by_message(message)
-    where(message:message).first
+    where(message:message)
   end
+
+  index({source: 1},{unique: true})
+
 end

@@ -10,7 +10,7 @@ class FacebookGraphTest< ActionController::TestCase
       @request.env["devise.mapping"]=Devise.mappings[:user]
       @user=FactoryGirl.create(:user)
       sign_in @user
-      get(:save_posts_with_comments_from_facebook_page,{:fb_id=>:humansofnewyork,:access_token=>Rails.application.secrets.fb_access_token})
+      get(:save_posts_with_comments_from_facebook_page,{fb_id: 'humansofnewyork', access_token: Rails.application.secrets.fb_access_token, number_of_posts: '314'})
       assert_response :success
     rescue => er
       puts er.backtrace

@@ -1,6 +1,6 @@
 FactoryGirl.define do
 	factory :user do
-		email "test@testing.com"
+		email "test-#{Time.now.hour}:#{Time.now.min}@testing.com"
 		password "password"
 		password_confirmation "password"
 	end
