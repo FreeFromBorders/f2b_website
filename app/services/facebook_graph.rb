@@ -6,13 +6,14 @@ class FacebookGraph
   require 'open-uri'
   require 'json'
 
-  def initialize(id,access_token,number_of_posts=100)
+  def initialize(id, access_token, number_of_posts=100)
     @facebook_graph_url = "https://graph.facebook.com/"
     @version = "v2.5"
     @access_token = access_token
     @id = id
-    @number_of_posts = number_of_posts.to_i
-    if @number_of_posts <= 100
+    @total_number_of_article = number_of_posts.to_i
+    @number_of_posts_remaining = @total_number_of_article
+    if @number_of_posts_remaining <= 100
       @fields = "posts.limit(#{number_of_posts}){message,created_time,comments{like_count,created_time,message},full_picture,shares}"  
     else
       @fields = "posts.limit(100){message,created_time,comments{like_count,created_time,message},full_picture,shares}"
@@ -21,10 +22,16 @@ class FacebookGraph
     @json = fetch_url(@url)
     @initial_hash = hash_json(@json)
     @page_iterator = @initial_hash
+    @progress_bar=ProgressBar.create(title: "Downloading Posts from #{id}", total: @total_number_of_article)
   end
 
   def fetch_url(url)
-    URI.parse(URI.encode(url)).read
+    begin
+      puts "Fetching url: #{url}"
+      URI.parse(URI.encode(url)).read
+    rescue Exception => e
+      
+    end
   end
 
   def hash_json(json)
@@ -100,12 +107,13 @@ class FacebookGraph
       begin
         post = get_ffb_post_from_fb_post(user,fb_post)
         post.save
-        @number_of_posts = @number_of_posts - 1
+        @number_of_posts_remaining = @number_of_posts_remaining - 1
+        @progress_bar.increment
         fb_post['comments'].each do |fb_comment|
           comment = get_ffb_comment_from_fb_comment(post,fb_comment)
           comment.save
         end
-        break if @number_of_posts <= 0
+        break if @number_of_posts_remaining <= 0
       rescue Exception => e
         puts "Error: " + e.message + "\n"
         puts "Post: " + fb_post['message']
@@ -115,14 +123,14 @@ class FacebookGraph
 
   def save_posts_with_comments_from_facebook_page(user)
     save_posts_from_hash(user,@initial_hash['posts']['data'])
-    if @number_of_posts>0
+    if @number_of_posts_remaining > 0
       save_next_batches_of_posts(user)
     end
   end
 
   def save_next_batches_of_posts(user)
-    while @number_of_posts > 0
-      posts_batch=get_next_batch_of_posts
+    while @number_of_posts_remaining > 0
+      posts_batch = get_next_batch_of_posts
       break if posts_batch.empty?
       save_posts_from_hash(user,posts_batch)
     end
@@ -137,7 +145,7 @@ class FacebookGraph
   end
 
   def get_next_posts_url
-    if @page_iterator==@initial_hash
+    if @page_iterator == @initial_hash
       @initial_hash['posts']['paging']['next']
     else
       @page_iterator['paging']['next']
