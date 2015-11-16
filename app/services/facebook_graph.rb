@@ -65,7 +65,7 @@ class FacebookGraph
       post['message'] = fb_post['message']
       post['time'] = fb_post['created_time']
       post['like_count'] = self.get_likes_count_for_post(fb_post['id'])
-      post['share_count'] = fb_post['shares']['count']
+      post['share_count'] = fb_post['shares']['count'] if not fb_post['shares'].nil?
       post['source'] = "https://www.facebook.com/"+fb_post['id']
       post['comments'] = []
       fb_post['comments']['data'].each do |fb_comment|
